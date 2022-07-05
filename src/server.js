@@ -3,48 +3,50 @@ const express =  require('express');
 const app = express();
 const puerto = 8080;
 const path = require('path');
-const { Server: HttpServer } = require('http');
 const { Server: IOServer } = require('socket.io');
-const httpServer = new HttpServer(app);
-const io = new IOServer(httpServer);
-
-app.use(express.static(path.join(__dirname,'/public')))
-
-httpServer.listen(puerto, (error)=>{
+const expressServer = app.listen(puerto, (error) => {
   if(error){
     console.log(`Se produjo un error ${error}`)
   }else{
     console.log(`Servidor escuchando puerto: ${puerto}`)
   }
 })
-
+const io = new IOServer(expressServer);
 const messages = [];
 const products = [];
 
-const saveChat = async () => {
+app.use(express.static(path.join(__dirname, '/public')))
+
+// función que guarda los mensajes
+const saveMessages = async () => {
   try{
-    await fs.promises.writeFile(path.join(__dirname,'/chat'), JSON.stringify(messages))
-    console.log('mensajes guardados')
+      await fs.promises.writeFile(path.join(__dirname,'/chat.txt'), JSON.stringify(messages))
+      console.log('Mensaje guardado')
   }catch(error){
-    console.log(`Se produjo un error ${error}`)
+      console.log(`Se produjo un error ${error}, no se pudo guardar el mensaje`)
   }
+
 }
 
-io.on('connection',  async socket =>{
-  console.log('se conecto un usuario - ID:', socket.id)
+// servidor
+io.on('connection', socket => {
+  console.log('Se conecto un usuario - ID:', socket.id)
 
-  io.emit('serverSend:Products', products)
+  // PRODUCTOS!!!
+  io.emit('server:productos', products) // renderizo los productos para todos los sokets
 
-  socket.on('client:enterProduct', dataProduct=>{
-    products.push(dataProduct)
-    io.emit('serverSend:Products', products)
+  socket.on('cliente:productos', data => {
+    products.push(data) // recibo el producto del cliente y lo pusheo al arreglo para la persistencia en memoria 
+    io.emit('server:productos', products) // emito el arreglo con los producots al cliente
   })
 
-  io.emit('serverSend:message', messages)
+  // CHAT!!!
+  io.emit('server:mensaje', messages) // renderizo los mensajes para todos los sokets
 
-  socket.on('client:message', dataMessage=>{
-    messages.push(dataMessage)
-    saveChat()
-    io.emit('serverSend:message', messages)
+  socket.on('cliente:mensaje', data => {
+    messages.push(data) // recibo el mensaje del cliente y lo pusheo al arreglo para la persistencia en memoria 
+    saveMessages() // guardo los mensajes
+    io.emit('server:mensajes', messages) // emito el arreglo con los mensajes al cliente
   })
 })
+

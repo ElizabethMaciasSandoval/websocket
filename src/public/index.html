@@ -4,24 +4,26 @@
     <meta charset="UTF-8">
     <meta http-equiv="X-UA-Compatible" content="IE=edge">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Document</title>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.2.0-beta1/dist/css/bootstrap.min.css" rel="stylesheet" integrity="sha384-0evHe/X+R7YkIZDRvuzKMRqM+OrBnVFBL6DOitfPri4tjfHxaWutUpFmBp4vmVor" crossorigin="anonymous">
+    <title>mi app</title>
 </head>
 <body>
-  <div>
+  <!-- Formulario para Ingresar Porductos -->
+  <div class="container">
     <h3>Ingresa un Producto</h3>
-    <form id="formProducts" action="/"  method="POST">
+    <form id="formProducts">
       Título: <input id="title" type="text" name="title" required>
       Precio: <input id="price"type="number" name="price" required>
       URL: <input id="thumbnail" type="text" name="thumbnail" required>
-      <input type="submit" value="subir">
+      <input type="submit" class="btn btn-info" value="subir">
     </form>
   </div>
-
-  <div>
+  <!-- Tabla de Porductos Ingresados -->
+  <div class="container">
     <div id="noProducts"></div>
     <h3>Productos:</h3>
-    <table>
-      <thead>
+    <table class="table table-bordered">
+      <thead class="table-success">
         <tr>
           <th scope="col">Nombre</th>
           <th scope="col">Precio</th>
@@ -31,20 +33,21 @@
       <tbody id="productTable" ></tbody> 
     </table>
   </div>
-
-  <div>
+  <!-- Formulario para Chat -->
+  <div class="container">
     <h3>Chatiemos</h3>
     <form id="formChat">
       Email: <input id="email" type="email" name="title" required>
       Mensaje: <input id="message" type="text" name="message" required>
-      <input type="submit" value="Enviar">
+      <input type="submit" class="btn btn-info" value="Enviar">
     </form>
   </div>
+  <!-- div donde se renderizar mensajes -->
+  <div id="messages" class="container"></div>
 
-  <div id="messages"></div>
-
+  <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.2.0-beta1/dist/js/bootstrap.bundle.min.js" integrity="sha384-pprn3073KE6tl6bjs2QrFaJGz5/SUsLqktiwsUTF55Jfv3qYSDhgCecCxMW52nD2" crossorigin="anonymous"></script>
   <script src="https://cdnjs.cloudflare.com/ajax/libs/handlebars.js/4.7.7/handlebars.min.js"></script>
   <script src="/socket.io/socket.io.js"></script>
-  <script src="./socket.js"></script>
+  <script src="./cliente.socket.js"></script>
 </body>
 </html>
